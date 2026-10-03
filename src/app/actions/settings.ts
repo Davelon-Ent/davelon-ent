@@ -175,7 +175,6 @@ export async function updateSystemSecurityAction(prevState: any, formData: FormD
   }
 
   const maintenanceMode = formData.get('maintenance_mode') === 'true'
-  const requireEmailVerification = formData.get('require_email_verification') === 'true'
 
   try {
     const adminSupabase = createAdminClient()
@@ -185,7 +184,6 @@ export async function updateSystemSecurityAction(prevState: any, formData: FormD
         {
           id: 'global',
           maintenance_mode: maintenanceMode,
-          require_email_verification: requireEmailVerification,
           updated_at: new Date().toISOString(),
           updated_by: currentUser.email,
         },
@@ -200,10 +198,11 @@ export async function updateSystemSecurityAction(prevState: any, formData: FormD
 
     revalidatePath('/admin/settings')
     revalidatePath('/')
+    revalidatePath('/maintenance')
 
     return {
       success: true,
-      message: `System security updated! Maintenance Mode is now ${maintenanceMode ? 'ENABLED' : 'DISABLED'}.`,
+      message: `System security updated! Site Maintenance Mode is now ${maintenanceMode ? 'ACTIVE (Public Access Restricted)' : 'DISABLED (Site Operational)'}.`,
     }
   } catch (err: any) {
     return { error: err.message || 'An unexpected error occurred while saving security settings.' }

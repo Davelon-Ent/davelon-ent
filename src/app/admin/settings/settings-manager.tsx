@@ -93,9 +93,6 @@ export function SettingsManager({ currentUser, initialSettings }: SettingsManage
 
   // Security Toggles State
   const [maintenanceMode, setMaintenanceMode] = useState<boolean>(initialSettings.maintenance_mode)
-  const [requireEmailVerification, setRequireEmailVerification] = useState<boolean>(
-    initialSettings.require_email_verification
-  )
   const [isSavingSecurity, setIsSavingSecurity] = useState(false)
 
   // Clearance helpers
@@ -180,7 +177,6 @@ export function SettingsManager({ currentUser, initialSettings }: SettingsManage
     try {
       const formData = new FormData()
       formData.set('maintenance_mode', maintenanceMode ? 'true' : 'false')
-      formData.set('require_email_verification', requireEmailVerification ? 'true' : 'false')
 
       const res = await updateSystemSecurityAction(null, formData)
       if (res?.error) {
@@ -680,41 +676,6 @@ export function SettingsManager({ currentUser, initialSettings }: SettingsManage
                 </label>
               </div>
 
-              {/* Toggle 2: Require Email Verification */}
-              <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-sky-400" />
-                    <span className="text-sm font-semibold text-white">
-                      Require Email Verification for New Staff
-                    </span>
-                    <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                        requireEmailVerification
-                          ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
-                          : 'bg-slate-800 text-slate-400 border border-slate-700'
-                      }`}
-                    >
-                      {requireEmailVerification ? 'Enforced' : 'Optional'}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-400 leading-relaxed max-w-xl">
-                    Forces all newly provisioned staff members to verify ownership of their email inbox before their first successful login.
-                  </p>
-                </div>
-
-                <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                  <input
-                    type="checkbox"
-                    checked={requireEmailVerification}
-                    onChange={(e) => setRequireEmailVerification(e.target.checked)}
-                    disabled={!isSuperAdmin}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
-                </label>
-              </div>
-
               {/* Submit Button */}
               <div className="flex justify-end pt-2">
                 <button
@@ -725,7 +686,7 @@ export function SettingsManager({ currentUser, initialSettings }: SettingsManage
                   {isSavingSecurity ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      Saving Security Toggles...
+                      Saving Security Settings...
                     </>
                   ) : (
                     <>

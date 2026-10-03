@@ -59,21 +59,59 @@ export async function updateSession(request: NextRequest) {
     }
   }
 
-  const isLoginPage = request.nextUrl.pathname === '/admin/login'
-  const isAdminRoute = request.nextUrl.pathname.startsWith('/admin')
+  function redirectWithCookies(url: URL, sourceResponse: NextResponse) {
+    const redirectResponse = NextResponse.redirect(url)
+    sourceResponse.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return redirectResponse
+  }
+
+  const pathname = request.nextUrl.pathname
+  const isLoginPage = pathname === '/admin/login'
+  const isAdminRoute = pathname.startsWith('/admin')
+  const isApiRoute = pathname.startsWith('/api')
+  const isMaintenanceRoute = pathname === '/maintenance'
 
   // Redirect unauthenticated visitors to /admin/login
   if (!user && isAdminRoute && !isLoginPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin/login'
-    return NextResponse.redirect(url)
+    return redirectWithCookies(url, supabaseResponse)
   }
 
   // Redirect authenticated users away from /admin/login to /admin dashboard
   if (user && isLoginPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/admin'
-    return NextResponse.redirect(url)
+    return redirectWithCookies(url, supabaseResponse)
+  }
+
+  // Check Site Maintenance Mode from system_settings
+  // Exempt routes: /admin, /api, /maintenance
+  const isExemptFromMaintenance = isAdminRoute || isApiRoute || isMaintenanceRoute
+
+  let isMaintenanceActive = false
+  try {
+    const { data: settingsData } = await supabase
+      .from('system_settings')
+      .select('maintenance_mode')
+      .eq('id', 'global')
+      .maybeSingle()
+
+    if (settingsData && settingsData.maintenance_mode) {
+      isMaintenanceActive = true
+    }
+  } catch {
+    // If table doesn't exist or query fails, leave maintenance mode inactive
+    isMaintenanceActive = false
+  }
+
+  // When maintenance mode is active, redirect unauthenticated public visitors to /maintenance
+  if (isMaintenanceActive && !user && !isExemptFromMaintenance) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/maintenance'
+    return redirectWithCookies(url, supabaseResponse)
   }
 
   return supabaseResponse
