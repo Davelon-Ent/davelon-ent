@@ -114,5 +114,12 @@ export async function updateSession(request: NextRequest) {
     return redirectWithCookies(url, supabaseResponse)
   }
 
+  // If on /maintenance but maintenance mode is inactive, automatically redirect to homepage (/)
+  if (!isMaintenanceActive && isMaintenanceRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/'
+    return redirectWithCookies(url, supabaseResponse)
+  }
+
   return supabaseResponse
 }
