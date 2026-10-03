@@ -124,10 +124,13 @@ export default function MaintenancePage() {
           </div>
 
           <div className="flex items-center gap-4 text-zinc-600">
-            <span className="flex items-center gap-1.5">
+            <a
+              href="tel:+2347026322798"
+              className="flex items-center gap-1.5 hover:text-zinc-900 transition-colors"
+            >
               <Phone className="w-3.5 h-3.5 text-zinc-400" />
-              +1 (555) 234-5678
-            </span>
+              +234 7026 322798
+            </a>
             <span>&bull;</span>
             <span className="flex items-center gap-1.5">
               <Mail className="w-3.5 h-3.5 text-zinc-400" />

@@ -18,7 +18,7 @@ export interface SystemSettings {
 const DEFAULT_SETTINGS: SystemSettings = {
   id: 'global',
   support_email: 'support@davelon.com',
-  company_phone: '+1 (555) 234-5678',
+  company_phone: '+234 7026 322798',
   office_address: '100 Industrial Parkway, Suite 400, Austin, TX 78701',
   maintenance_mode: false,
   require_email_verification: true,

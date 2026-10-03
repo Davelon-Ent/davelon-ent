@@ -1,7 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ShieldCheck, ExternalLink } from 'lucide-react'
+import { ShieldCheck, ExternalLink, Phone } from 'lucide-react'
 
 export async function PublicFooter() {
   const supabase = await createClient()
@@ -44,12 +44,20 @@ export async function PublicFooter() {
             </a>
             <span className="text-zinc-700 hidden sm:inline">•</span>
             <a
+              href="tel:+2347026322798"
+              className="hover:text-bronze-400 transition-colors flex items-center gap-1.5"
+            >
+              <Phone className="w-3.5 h-3.5 text-zinc-400" />
+              <span>+234 7026 322798</span>
+            </a>
+            <span className="text-zinc-700 hidden sm:inline">•</span>
+            <a
               href="https://wa.me/2347026322798"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-emerald-400 transition-colors"
             >
-              WhatsApp: +234 702 632 2798
+              WhatsApp: +234 7026 322798
             </a>
           </div>
         </div>
